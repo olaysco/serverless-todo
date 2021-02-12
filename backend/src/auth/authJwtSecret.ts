@@ -24,3 +24,9 @@ export default async (jwksUrl: string, jwt: Jwt): Promise<any> => {
         createLogger('JWT').error(error);
     }
 }
+
+function certToPEM(cert: string): string {
+  cert = cert.match(/.{1,64}/g).join('\n')
+  cert = `-----BEGIN CERTIFICATE-----\n${cert}\n-----END CERTIFICATE-----\n`
+  return cert
+}

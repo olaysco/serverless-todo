@@ -9,7 +9,7 @@ export class TodoAccess {
     constructor(
         private readonly docClient: DocumentClient = createDynamoDBClient(),
         private readonly todosTable = process.env.TODOS_TABLE,
-        private readonly todosUserIndex = process.env.TODOS_TABLE_USER_INDEX
+        private readonly todosUserIndex = process.env.TODOS_USER_INDEX
     ) { }
 
     /**

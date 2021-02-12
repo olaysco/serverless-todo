@@ -9,7 +9,7 @@ import authJwtSecret from '../../auth/authJwtSecret'
 
 const logger = createLogger('auth')
 
-const jwksUrl = 'https://olaysco.us.auth0.com/.well-known/jwks.json'
+const jwksUrl = process.env.AUTH0_JWKS_URL
 
 export const handler = async (
   event: CustomAuthorizerEvent
