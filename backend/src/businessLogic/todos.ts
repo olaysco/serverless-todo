@@ -53,7 +53,7 @@ const getSignedUploadUrl = async (attachmentId: string) => {
     return url
 }
 
-const updateAttahmentUrl = async (userId: string, id: string, attachmentId: string) => {
+const updateAttachmentUrl = async (userId: string, id: string, attachmentId: string) => {
     const url = await storage.getUrl(attachmentId)
     const item = await access.getTodo(id)
     validateTodo(userId, item)
@@ -79,4 +79,4 @@ const validateTodo = (userId: string, item: any) => {
     return true
 }
 
-export {createTodo, getTodos, updateTodo, deleteTodo, getSignedUploadUrl, updateAttahmentUrl}
+export {createTodo, getTodos, updateTodo, deleteTodo, getSignedUploadUrl, updateAttachmentUrl}

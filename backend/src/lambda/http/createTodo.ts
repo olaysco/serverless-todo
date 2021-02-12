@@ -1,22 +1,21 @@
 import 'source-map-support/register'
 
-import * as AWS from 'aws-sdk'
-
 import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda'
 
 import { CreateTodoRequest } from '../../requests/CreateTodoRequest'
+import { createTodo } from '../../businessLogic/todos'
+import { getUserId } from '../utils'
+import { JSONResponse } from '../../utils/response'
 
-const docClient = new AWS.DynamoDB.DocumentClient()
-const todoTable = process.env.TODOS_TABLE
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const newTodo: CreateTodoRequest = JSON.parse(event.body)
 
-  newTodo.createdAt = new Date().toISOString()
-  newTodo.done = false
+  try {
+    const item = await createTodo(getUserId(event), newTodo)
+    return JSONResponse({ item }, 201)
+  } catch (e) {
+    return JSONResponse({'message': e.message ?? 'internal server error'}, e.code?? 500)
+  }
   
-  await docClient.put
-
-  // TODO: Implement creating a new TODO item
-  return undefined
 }

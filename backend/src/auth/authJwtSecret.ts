@@ -24,7 +24,3 @@ export default async (jwksUrl: string, jwt: Jwt): Promise<any> => {
         createLogger('JWT').error(error);
     }
 }
-
-// const getSigningKey = async (kid) => {
-    
-// }
