@@ -1,5 +1,4 @@
-### Serverless TODO APP on AWS
-
+### Serverless TODO APP
 **A simple serverless TODO APP built on the AWS stack**
 
 ---
