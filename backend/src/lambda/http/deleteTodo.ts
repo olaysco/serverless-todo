@@ -9,7 +9,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   const todoId = event.pathParameters.todoId
 
   try {
-    deleteTodo(getUserId(event), todoId)
+    await deleteTodo(getUserId(event), todoId)
     return JSONResponse({
       'message': 'todo deleted successfully'
     })

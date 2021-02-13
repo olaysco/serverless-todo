@@ -1,9 +1,12 @@
 import { TodoItem, TodoUpdate } from "../models"
 import * as AWS from 'aws-sdk'
+import * as AWSXRay from 'aws-xray-sdk'
 import { DocumentClient } from "aws-sdk/clients/dynamodb"
 import { createLogger } from "../utils/logger"
 
 const logger = createLogger('todoAccess')
+
+const XAWS = AWSXRay.captureAWS(AWS)
 
 export class TodoAccess {
     constructor(
@@ -67,6 +70,7 @@ export class TodoAccess {
      * @returns Promise<void>
      */
     async updateTodoAttachment(id: string, todoUpdate: TodoUpdate): Promise<void> {
+        logger.info(`begin: updating todo ${id}  url: ${todoUpdate.attachmentUrl}`)
         await this.docClient.update({
             TableName: this.todosTable,
             Key: {
@@ -77,6 +81,7 @@ export class TodoAccess {
                 ':url': todoUpdate.attachmentUrl
             }
         }).promise()
+        logger.info(`end: updating todo ${id}  url: ${todoUpdate.attachmentUrl}`)
     }
 
      /**
@@ -105,7 +110,7 @@ export class TodoAccess {
             IndexName: this.todosUserIndex,
             KeyConditionExpression: 'userId = :userId',
             ExpressionAttributeValues: {
-                'userId': userId
+                ':userId': userId
             }
         }).promise()
 
@@ -130,24 +135,26 @@ export class TodoAccess {
      * @returns Promise<void>
      */
     async deleteTodo(id: string): Promise<void> {
+        logger.info(`begin: deleting todo ${id} `)
         this.docClient.delete({
             TableName: this.todosTable,
             Key: {
                 id
             }
         }).promise()
+        logger.info(`end: deleted todo ${id} `)
     }
 }
 
 function createDynamoDBClient() {
   if (process.env.IS_OFFLINE) {
     logger.info('Creating a local DynamoDB instance')
-    return new AWS.DynamoDB.DocumentClient({
+    return new XAWS.DynamoDB.DocumentClient({
       region: 'localhost',
       endpoint: 'http://localhost:8000'
     })
   }
 
   logger.info('Creating a cloud DynamoDB instance')
-  return new AWS.DynamoDB.DocumentClient()
+  return new XAWS.DynamoDB.DocumentClient()
 }

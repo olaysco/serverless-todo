@@ -6,6 +6,7 @@ import { CreateTodoRequest } from '../requests/CreateTodoRequest'
 import { UpdateTodoRequest } from '../requests/UpdateTodoRequest'
 import { ObjectStorage } from '../storageLayer/objectStorage'
 import { createLogger } from '../utils/logger'
+import { HTTPException } from '../utils/exception'
 
 const access = new TodoAccess()
 const storage = new ObjectStorage()
@@ -37,7 +38,7 @@ const updateTodo = async (userId: string, id: string, updateTodoRequest: UpdateT
     const item = await access.getTodo(id)
     validateTodo(userId, item)    
 
-    access.updateTodo(id, updateTodoRequest)
+    return await access.updateTodo(id, updateTodoRequest)
 }
 
 //delete
@@ -45,15 +46,17 @@ const deleteTodo = async (userId: string, id: string) => {
     const item = await access.getTodo(id)
     validateTodo(userId, item)
 
-    access.deleteTodo(id)
+    await access.deleteTodo(id)
+    return true
 }
 
 const getSignedUploadUrl = async (attachmentId: string) => {
-    const url = await storage.getUrl(attachmentId);
+    const url = await storage.signUrl(attachmentId);
     return url
 }
 
 const updateAttachmentUrl = async (userId: string, id: string, attachmentId: string) => {
+    logger.info(`updating todo ${id} with attachment url ${attachmentId}`)
     const url = await storage.getUrl(attachmentId)
     const item = await access.getTodo(id)
     validateTodo(userId, item)
@@ -62,7 +65,9 @@ const updateAttachmentUrl = async (userId: string, id: string, attachmentId: str
         attachmentUrl: url
     }
 
-    access.updateTodoAttachment(id, urlUpdate)
+    await access.updateTodoAttachment(id, urlUpdate)
+    
+    return true
 }
 
 const validateTodo = (userId: string, item: any) => {

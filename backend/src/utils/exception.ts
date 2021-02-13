@@ -3,7 +3,7 @@ interface error {
     code?: number
 }
 
-class HTTPException extends Error {
+export class HTTPException extends Error {
     public code
     public date
     

@@ -1,9 +1,8 @@
 import { CustomAuthorizerEvent, CustomAuthorizerResult } from 'aws-lambda'
 import 'source-map-support/register'
 
-import { verify, decode } from 'jsonwebtoken'
+import { verify } from 'jsonwebtoken'
 import { createLogger } from '../../utils/logger'
-import { Jwt } from '../../auth/Jwt'
 import { JwtPayload } from '../../auth/JwtPayload'
 import authJwtSecret from '../../auth/authJwtSecret'
 
@@ -53,8 +52,8 @@ export const handler = async (
 
 async function verifyToken(authHeader: string): Promise<JwtPayload> {
   const token = getToken(authHeader)
-  const jwt: Jwt = decode(token, { complete: true }) as Jwt
-  const secret = await authJwtSecret(jwksUrl, jwt);
+  // const jwt: Jwt = decode(token, { complete: true }) as Jwt
+  const secret = await authJwtSecret(jwksUrl);
   return verify(token, secret, { algorithms: ['RS256'] }) as  JwtPayload
 }
 

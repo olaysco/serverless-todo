@@ -1,5 +1,8 @@
 import 'source-map-support/register'
 import * as AWS from 'aws-sdk'
+import { createLogger } from '../utils/logger'
+
+const logger = createLogger('s3')
 
 export class ObjectStorage {
     constructor(
@@ -15,6 +18,7 @@ export class ObjectStorage {
      * @returns Promise<string>
      */
     async signUrl(objectId: string): Promise<string> {
+        logger.info(`signing upload URL key ${objectId} with ${this.expsIn} expiration time`)
         return this.storage.getSignedUrl('putObject', {
             Bucket: this.bucketName,
             Key: objectId,
@@ -35,6 +39,7 @@ export class ObjectStorage {
 
 const getStorage = () => {
     if (process.env.IS_OFFLINE) {
+        logger.info('Creating a local S3 instance')
           return new AWS.S3({
             s3ForcePathStyle: true,
             accessKeyId: 'S3RVER',
@@ -42,5 +47,7 @@ const getStorage = () => {
             endpoint: 'http://localhost:8000',
         });
     }
+
+    logger.info('Creating a cloud S3 instance')
     return new AWS.S3({ signatureVersion: 'v4' })
 }

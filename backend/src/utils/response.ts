@@ -1,4 +1,6 @@
-export const JSONResponse = (response: Record<string, unknown>, statusCode: number = 200) => {
+import { APIGatewayProxyResult } from "aws-lambda"
+
+export const JSONResponse = (response: Record<string, unknown>, statusCode:number = 200): APIGatewayProxyResult => {
   return {
     statusCode,
     headers: {
@@ -6,7 +8,7 @@ export const JSONResponse = (response: Record<string, unknown>, statusCode: numb
       'Access-Control-Allow-Credentials': true
     },
     body: JSON.stringify({
-      response
+      ...response
     })
   }
 }
