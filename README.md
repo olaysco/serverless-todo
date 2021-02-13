@@ -2,18 +2,18 @@
 
 **A simple serverless TODO APP built on the AWS stack**
 
---
+---
 
 ## Tech Stack
--- AWS Lambda
--- AWS Dynamodb
--- AWS XRay
--- AWS APIGateway
--- AWS S3
--- Auth0
--- React Framewaork
--- Typescript
--- Node.js
+- AWS Lambda
+- AWS Dynamodb
+- AWS XRay
+- AWS APIGateway
+- AWS S3
+- Auth0
+- React Framewaork
+- Typescript
+- Node.js
 
 ## Prerequisites
 
