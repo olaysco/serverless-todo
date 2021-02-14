@@ -35,18 +35,18 @@ const getTodos = async (userId: string): Promise<TodoItem[]> => {
 
 //update
 const updateTodo = async (userId: string, id: string, updateTodoRequest: UpdateTodoRequest) => {
-    const item = await access.getTodo(id)
+    const item = await access.getTodo(userId, id)
     validateTodo(userId, item)    
 
-    return await access.updateTodo(id, updateTodoRequest)
+    return await access.updateTodo(userId, id, updateTodoRequest)
 }
 
 //delete
 const deleteTodo = async (userId: string, id: string) => {
-    const item = await access.getTodo(id)
+    const item = await access.getTodo(userId, id)
     validateTodo(userId, item)
 
-    await access.deleteTodo(id)
+    await access.deleteTodo(userId, id)
     return true
 }
 
@@ -58,14 +58,14 @@ const getSignedUploadUrl = async (attachmentId: string) => {
 const updateAttachmentUrl = async (userId: string, id: string, attachmentId: string) => {
     logger.info(`updating todo ${id} with attachment url ${attachmentId}`)
     const url = await storage.getUrl(attachmentId)
-    const item = await access.getTodo(id)
+    const item = await access.getTodo(userId, id)
     validateTodo(userId, item)
 
     const urlUpdate: TodoUpdate = {
         attachmentUrl: url
     }
 
-    await access.updateTodoAttachment(id, urlUpdate)
+    await access.updateTodoAttachment(userId, id, urlUpdate)
     
     return true
 }

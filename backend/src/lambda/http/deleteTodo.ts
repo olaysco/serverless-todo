@@ -4,6 +4,7 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } f
 import { deleteTodo } from '../../businessLogic/todos'
 import { getUserId } from '../utils'
 import { JSONResponse } from '../../utils/response'
+import { createLogger } from '../../utils/logger'
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const todoId = event.pathParameters.todoId
@@ -14,6 +15,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
       'message': 'todo deleted successfully'
     })
   } catch (e) {
+    createLogger('delete').error(e)
     return JSONResponse({'message': e.message ?? 'internal server error'}, e.code?? 500)
   }
 }

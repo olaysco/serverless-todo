@@ -37,10 +37,11 @@ export class TodoAccess {
      * @param todoItem TodoUpdate
      * @returns Promise<any>
      */
-    async updateTodo(id: string, todoItem: TodoUpdate): Promise<any> {
+    async updateTodo(userId: string, id: string, todoItem: TodoUpdate): Promise<any> {
         const result = await this.docClient.update({
             TableName: this.todosTable,
             Key: {
+                userId,
                 id
             },
             UpdateExpression: 'set #name = :name, dueDate = :dueDate, done = :done',
@@ -69,11 +70,12 @@ export class TodoAccess {
      * @param todoUpdate TodoUpdate
      * @returns Promise<void>
      */
-    async updateTodoAttachment(id: string, todoUpdate: TodoUpdate): Promise<void> {
+    async updateTodoAttachment(userId: string, id: string, todoUpdate: TodoUpdate): Promise<void> {
         logger.info(`begin: updating todo ${id}  url: ${todoUpdate.attachmentUrl}`)
         await this.docClient.update({
             TableName: this.todosTable,
             Key: {
+                userId,
                 id
             },
             UpdateExpression: 'set attachmentUrl = :url',
@@ -90,8 +92,8 @@ export class TodoAccess {
      * @param id string
      * @returns Promise<boolean>
      */
-    async checkTodoExists(id: string): Promise<boolean> {
-        const todo = await this.getTodo(id);
+    async checkTodoExists(userId, id: string): Promise<boolean> {
+        const todo = await this.getTodo(userId, id);
         if (todo) {
             return true
         }
@@ -117,10 +119,11 @@ export class TodoAccess {
         return result.Items as TodoItem[]
     }
 
-    async getTodo(id: string): Promise<TodoItem> {
+    async getTodo(userId: string, id: string): Promise<TodoItem> {
         const result = await this.docClient.get({
             TableName: this.todosTable,
             Key: {
+                userId,
                 id
             }
         }).promise();
@@ -134,15 +137,16 @@ export class TodoAccess {
      * @param id string
      * @returns Promise<void>
      */
-    async deleteTodo(id: string): Promise<void> {
+    async deleteTodo(userId: string, id: string): Promise<void> {
         logger.info(`begin: deleting todo ${id} `)
         this.docClient.delete({
             TableName: this.todosTable,
             Key: {
+                userId,
                 id
             }
         }).promise()
-        logger.info(`end: deleted todo ${id} `)
+        logger.info(`end: delete todo ${id} `)
     }
 }
 
